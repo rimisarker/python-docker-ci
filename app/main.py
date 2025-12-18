@@ -3,3 +3,6 @@ def calculate_sum(a, b):
 
 def get_status():
     return True
+
+def hello():
+    return "CI is working!"
