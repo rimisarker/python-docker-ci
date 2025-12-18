@@ -1,0 +1,28 @@
+name: Professional Python CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t my-app-image .
+
+      - name: Step 1: Linting Check (Code Quality)
+        run: |
+          # কোড ফরম্যাট ভুল থাকলে এখানে আটকে যাবে
+          docker run my-app-image flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Step 2: Functional Testing (Strict)
+        run: |
+          # যদি টেস্ট ফেইল করে বা কোড কাভারেজ ৯০% এর নিচে হয় তবে রিজেক্ট করবে
+          docker run my-app-image pytest --cov=app tests/ --cov-fail-under=90
